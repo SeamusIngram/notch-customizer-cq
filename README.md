@@ -52,7 +52,7 @@ Many modders make notches with "sloped" edges, often to match the profile of the
 
 If you wish to have a sloped edge, set **sloped** to True. The default **gate_angle** is 56 degrees, which closely matches the original gate angle. You may change this if you want another gate angle. If you want notches that go straight up and down, set **sloped** False. Do not change the gate angle to 90 degrees, the features might not be the same as if you just set **sloped** to False.
 
-If you find that the notches are not the right depth when enable sloped, you should change the value of adjust_sloped_depth, not the notch or diagonal depth. This way, you can adjust the sloped notches independently of the vertical ones. A higher value will make your notches more shallow. 
+If you find that the notches are not the right depth when you enable sloped notches, you should change the value of **adjust_sloped_depth**, not the notch or diagonal depth. This way, you can adjust the sloped notches independently of the vertical ones. A higher value will make your notches more shallow. 
 
 # Adding your own Designs
 I have included an unmodified GCC shell step to be customised. Credit to [GearHawkStudio](https://twitter.com/GearhawkStudio) who created and shared the model. If you have your own gates that you wish to notch, the script should work, so long as your gate is centred at (0,0). Keep in mind that the spacing and depth of the notches are for a GCC gate, so if your design is significantly different it may require many parameter adjustments. You may need to adjust the positioning of the cutting bodies as well. The GCC gate is tilted by design approximately 3 degrees, so if your gate has a different offset rotation, then this has to be changed or the notches will not be in the correct locations. Change the variable **offset** in the script to the appropriate angle. Additionally, the geometry cutting the notches are positioned at a specific height. This is important when making sloped notches in particular. If the vertical positioning of your model is different to what's expected, no notches will be made. Change the **h_offset** value until the notches appear.
@@ -65,13 +65,21 @@ You may export as either a step or stl file. By default, only step files are cre
 The files are exported to the gates/exports directory (if the folder doesn't exist, it will be made). The file will be named automatically with the relevant parameter values
 
 the format is:
+\
 original file name,
+\
 _notch_depth_x, where x is **notch_depth_double**
+\
 _adjustment_x_gate_angle_y, where x is **adjust_slope_depth** and y is **gate_angle** if **sloped** was True
+\
 _convex_x_y, where x is **convexity** and y is **convexity_weight** if **convex** was True, or
+\
 _straight if **convex** was False
+\
 _filleted_x, where x is **round_radius** if **rounded** was True
+\
 _flare_angle_x, where x is **flare_ang** if **flared** was True
+\
 _angles, followed by all the angles separated by underscores in the same order as the **angs** list
 
 The resulting name is quite long, but I wanted it to record all major parameters. That way someone could be given the settings used and replicate it exactly if they wished.
