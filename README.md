@@ -1,7 +1,5 @@
 # notch-customizer-cq
-Cadquery version of parametric notching script for Gamecube Controllers
-# notch-customizer
-Parametric GCC notching using CadQuery. Should support any GCC shell design ideas!
+Cadquery version of parametric notching script for Gamecube Controllers. Should support any GCC shell design ideas!
 Based on my notch-customizer made with OpenSCAD, and has many of the same capabilities. I'm more comfortable with python, so I'll probably be updating this version only going forward.
 
 ## y tho?
