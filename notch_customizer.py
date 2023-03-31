@@ -2,8 +2,8 @@ import cadquery as cq
 from cadquery import exporters
 import math
 #fname = "gate_0-6mm"
-fname = "gate_0-3mm"
-#fname = 'shell_front'
+#fname = "gate_0-3mm"
+fname = 'shell_front'
 path = f'gates/{fname}.step'
 result = cq.importers.importStep(path)
 
@@ -36,7 +36,7 @@ def make_single_notch(notch_ang,diag_ang,notch_depth,diag_depth,flare_ang):
     notch =(cq.Workplane("front")
              .polarLineTo(diag_depth, diag_ang-offset))
     if convex:
-        notch = notch.threePointArc(polarToCartesian(notch_depth*(1-convexity),(notch_ang+diag_ang)*convexity_weight-offset),polarToCartesian(notch_depth, notch_ang-offset))
+        notch = notch.threePointArc(polarToCartesian(notch_depth*(1-convexity),(notch_ang*convexity_weight)+(1-convexity_weight)*diag_ang-offset),polarToCartesian(notch_depth, notch_ang-offset))
     else:
         notch = notch.polarLineTo(notch_depth, notch_ang-offset)
     if flared:
@@ -47,7 +47,7 @@ def make_single_notch(notch_ang,diag_ang,notch_depth,diag_depth,flare_ang):
         notch=(notch.workplane(offset=h)
                .polarLineTo(diag_depth+r_sloped, diag_ang-offset))
         if convex:
-            notch = notch.threePointArc(polarToCartesian((notch_depth+r_sloped)*(1-convexity),(notch_ang+diag_ang)*convexity_weight-offset),polarToCartesian(notch_depth+r_sloped, notch_ang-offset))
+            notch = notch.threePointArc(polarToCartesian((notch_depth+r_sloped)*(1-convexity),(notch_ang*convexity_weight)+(1-convexity_weight)*diag_ang,polarToCartesian(notch_depth+r_sloped, notch_ang-offset))
         else:
             notch = notch.polarLineTo(notch_depth+r_sloped, notch_ang-offset)
         if flared:
@@ -56,7 +56,11 @@ def make_single_notch(notch_ang,diag_ang,notch_depth,diag_depth,flare_ang):
     else:
         notch=notch.extrude(h)
     return notch
-
+                                        
+# Notch angles, with quadrants ordered counter clockwise starting with North East
+# Follows the quadrants of a circle, if you're familiar
+# Angle is always taken with respect to the horizontal                                    
+angs = [(17,73),(17,73),(17,73),(17,73)]
 # Adjust the notch depth, can tune for single and double notches
 notch_depth_double = 11
 diagonal_depth_double = 11.6
@@ -75,9 +79,7 @@ gate_angle = 56
 # If you want sloped notches, use this to adjust depth instead of the notch_depth. 
 # Higher number = shallower notch
 adjust_sloped_depth = 1.75
-# Notch angles, ordered counter clockwise starting with North West
-# Follows the quadrants of a circle, if you're familiar
-angs = [(17,73),(17,73),(17,73),(17,73)]
+
 # Don't adjust these, unless you're using a different model than the provided ones
 offset = 3
 h_offset = 14.5
