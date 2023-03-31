@@ -63,21 +63,21 @@ diagonal_depth_double = 11.6
 notch_depth_single = 11
 diagonal_depth_single = 11
 # Change these parameters for different notch styles
-convex = True
+convex = False
 convexity = 0.025
 convexity_weight = 0.5
-rounded = True
+rounded = False
 round_radius = 0.25
-flared = True
+flared = False
 flare_ang = 50
-sloped = True
+sloped = False
 gate_angle = 56
 # If you want sloped notches, use this to adjust depth instead of the notch_depth. 
 # Higher number = shallower notch
 adjust_sloped_depth = 1.75
 # Notch angles, ordered counter clockwise starting with North West
 # Follows the quadrants of a circle, if you're familiar
-angs = [(17,73),(17,73),(17,73),(17,73)]
+angs = [(21,60),(30,70),(20,65),(17,73)]
 # Don't adjust these, unless you're using a different model than the provided ones
 offset = 3
 h_offset = 14.5
