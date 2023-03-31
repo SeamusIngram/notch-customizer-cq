@@ -21,22 +21,34 @@ The CadQuery repo has instructions for installation, and I would recommend this 
 ## Angles
 The headline feature is that you can specify the angle of each notch. The notch is created by cutting material from the diagonal of the gate all the way to the desired angle. There is currently no way to have notches that appear as a 'tooth' in the gate (like the infamous [Multishine Notches](https://multishine.tech/collections/wp-content/uploads/2022/01/full-notches-smash-ultimate-gamecube.png)). This means you cannot have more that one notch in each octant of the gate. The angle of a given notch can only be 1-44 or 46-89 degrees, depending on the notch. The angles are stored in the **angs** list, where each index contains a pair of angles. The first value accepts angles 1-44 and the second 46-89. The notches are ordered starting from the North East quadrant of the gate, and move around the quadrant counter clockwise. Note the angle is always taken from the horizontal, so an angle of 17 degrees in the South West quadrant would create a shallow angle, which you might use for perfect wavedashes.
 
+![Various Angles](/img/angles.png)
+
 If you do not want a notch at a specific (For example, you want wavedash notches only), you can enter 0 for that angle. If you have one notch in a quadrant, the script will use different depth values, in case you have different preferences for quadrants with one (referred to as a single) or two (double) notches.
  
 ## Depth
  You may adjust the depth of your notches with the **notch_depth** and **diagonal_depth**, which control how far into the gate it gets cuts at those two points. As mentioned above, you can choose different depths for single notches and double notches. This is mostly because I found that I might prefer the diagonal of the gate to be intact with a single notch, but did not mind cutting deeper into the diagonal with two notches.
 
+![Various Depths](/img/depths.png)
+
 ## Fillets
 You may wish to get rid of the sharp corners. Since the stick itself is circular, it won't actually rest all the way in a sharp corner. Set **rounded** to True to and adjust **round_radius** to your liking. Default is 0.25.
+
+![Filleted Edges](/img/rounds.png)
 
 ## Convexity
 A convex notch will make it so that your stick wants to move into the notch, allowing you to quickly and consistently hit the notch angle. A straight notch will make it so that the intermediate angles between the notch and diagonal are equally easy to pinpoint. Credit to [Kadano's](http://kadano.net/SSBM/GCC/) detailed notching explanations, which helped inform the customization options. To enable convex notches, set **convex** to True (False for straight notches). Increasing the *convexity* will make the curve more pronounced, but too large a value will result in strange geometries. Values between 0.001 and 0.05 are recommended. **convexity_weighting** will move the peak of the notch curve. The value **must be between 0 and 1**. 0.5 will put the peak of the curve at the midpoint of the notch and the diagonal, a value less than 0.5 will put it closer to the diagonal, and greater will move it towards the notch.
 
+![Various Curves](/img/curves.png)
+
 ## Flared Edges
 The script by default cuts the notches in a straight line from the centre of the gate, but this can result in  notches that 'hook' inwards, which can lead to the stick not comfortably fitting in the notch, or getting stuck. You might wish to "flare" the notch so it's easier to roll in and out. Set **flared** to True to enable, and then specify the **flare_ang**. The angle of the flare is taken from the notch with respect to the horizontal/vertical, so I recommend a value near 45 degrees.
 
+![Flared Notches](/img/flares.png)
+
 ## Sloped Notches
 Many modders make notches with "sloped" edges, often to match the profile of the unmodified gate. This means that the angled surface will be in contact with the stick when it moves along the gate. Some people prefer a "straight" notch, which means only the edge. This is discussed in Goomy's *How to notch a GameCube controller* video [here](https://youtu.be/IPyPO3TByUU?t=313). 
+
+![Cross section of sloped styles](/img/slopes.png)
 
 If you wish to have a sloped edge, set **sloped** to True. The default **gate_angle** is 56 degrees, which closely matches the original gate angle. You may change this if you want another gate angle. If you want notches that go straight up and down, set **sloped** False. Do not change the gate angle to 90 degrees, the features might not be the same as if you just set **sloped** to False.
 
