@@ -47,7 +47,7 @@ def make_single_notch(notch_ang,diag_ang,notch_depth,diag_depth,flare_ang):
         notch=(notch.workplane(offset=h)
                .polarLineTo(diag_depth+r_sloped, diag_ang-offset))
         if convex:
-            notch = notch.threePointArc(polarToCartesian((notch_depth+r_sloped)*(1-convexity),(notch_ang*convexity_weight)+(1-convexity_weight)*diag_ang,polarToCartesian(notch_depth+r_sloped, notch_ang-offset))
+            notch = notch.threePointArc(polarToCartesian((notch_depth+r_sloped)*(1-convexity),(notch_ang*convexity_weight)+(1-convexity_weight)*diag_ang-offset),polarToCartesian(notch_depth+r_sloped, notch_ang-offset))
         else:
             notch = notch.polarLineTo(notch_depth+r_sloped, notch_ang-offset)
         if flared:
@@ -67,21 +67,19 @@ diagonal_depth_double = 11.6
 notch_depth_single = 11
 diagonal_depth_single = 11
 # Change these parameters for different notch styles
-convex = False
+convex = True
 convexity = 0.025
 convexity_weight = 0.5
-rounded = False
+rounded = True
 round_radius = 0.25
-flared = False
+flared = True
 flare_ang = 50
-sloped = False
+sloped = True
 gate_angle = 56
 # If you want sloped notches, use this to adjust depth instead of the notch_depth. 
 # Higher number = shallower notch
 adjust_sloped_depth = 1.75
-# Notch angles, ordered counter clockwise starting with North West
-# Follows the quadrants of a circle, if you're familiar
-angs = [(17,73),(17,73),(17,73),(17,73)]
+
 # Don't adjust these, unless you're using a different model than the provided ones
 offset = 3
 h_offset = 14.5
