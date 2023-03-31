@@ -57,7 +57,7 @@ If you find that the notches are not the right depth when you enable sloped notc
 # Adding your own Designs
 I have included an unmodified GCC shell step to be customised. Credit to [GearHawkStudio](https://twitter.com/GearhawkStudio) who created and shared the model. If you have your own gates that you wish to notch, the script should work, so long as your gate is centred at (0,0). Keep in mind that the spacing and depth of the notches are for a GCC gate, so if your design is significantly different it may require many parameter adjustments. You may need to adjust the positioning of the cutting bodies as well. The GCC gate is tilted by design approximately 3 degrees, so if your gate has a different offset rotation, then this has to be changed or the notches will not be in the correct locations. Change the variable **offset** in the script to the appropriate angle. Additionally, the geometry cutting the notches are positioned at a specific height. This is important when making sloped notches in particular. If the vertical positioning of your model is different to what's expected, no notches will be made. Change the **h_offset** value until the notches appear.
 
-CadQuery only can import step files (no stl). Place your file in the gates folder, and set the string fname = "your_file_name".
+CadQuery only can import step files (no stl). Place your file in the gates folder, and set the string **fname** to "your_file_name" (do not include the file extension).
 
 # Exporting 
 You may export as either a step or stl file. By default, only step files are created, but you may uncomment the last line of the script, and it well also export an stl.
