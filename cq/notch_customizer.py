@@ -8,61 +8,11 @@ reset_show() # use for reapeated shift-enter execution to clean object buffer
 set_defaults(axes=True, black_edges=True, transparent=False, collapse=1, grid=(True, True, True))
 
 #fname = "gate_0-6mm"
-fname = "gate_0-3mm"
+fname = "gateplate-stock"
 #fname = 'shell_front'
 path = f'gates/{fname}.step'
 result = cq.importers.importStep(path)
 
-# threePointArc does not accept polar coordinates, so need to convert
-def polarToCartesian(r,theta):
-    print(theta)
-    x = math.cos(math.radians(theta))*r
-    y = math.sin(math.radians(theta))*r
-    return(x,y)
-# Moves the angle to the correct quadrant
-def changeAngleQuadrant(angle,quadrant):
-    if quadrant == 2:
-        return 180-angle
-    elif quadrant == 3:
-        return 180 + angle
-    elif quadrant == 4:
-        return -angle
-    else:
-        return angle
-# Cylidrical to Cartersian coordinates
-# Used to generate the notch path for sloped notches
-def cylindricalToCartesian(r,theta,h):
-    x=r*math.cos(math.radians(theta))
-    y=r*math.sin(math.radians(theta))
-    z = h
-    return (x,y,z)
-# Creates notch from diagonal to desired angle
-# Called twice per quadrant
-def make_single_notch(notch_ang,diag_ang,notch_depth,diag_depth,flare_ang):        
-    notch =(cq.Workplane("front")
-             .polarLineTo(diag_depth, diag_ang-offset))
-    if convex:
-        notch = notch.threePointArc(polarToCartesian(notch_depth*(1-convexity),(notch_ang*convexity_weight)+(1-convexity_weight)*diag_ang-offset),polarToCartesian(notch_depth, notch_ang-offset))
-    else:
-        notch = notch.polarLineTo(notch_depth, notch_ang-offset)
-    if flared:
-        notch=notch.polarLine(-flare_length,flare_ang-offset)
-    notch=notch.close()
-
-    if sloped:
-        notch=(notch.workplane(offset=h)
-               .polarLineTo(diag_depth+r_sloped, diag_ang-offset))
-        if convex:
-            notch = notch.threePointArc(polarToCartesian((notch_depth+r_sloped)*(1-convexity),(notch_ang*convexity_weight)+(1-convexity_weight)*diag_ang-offset),polarToCartesian(notch_depth+r_sloped, notch_ang-offset))
-        else:
-            notch = notch.polarLineTo(notch_depth+r_sloped, notch_ang-offset)
-        if flared:
-            notch=notch.polarLine(-(flare_length+r_sloped),flare_ang-offset)
-        notch=notch.close().loft(combine=True)
-    else:
-        notch=notch.extrude(h)
-    return notch
-                                        
 # Notch angles, with quadrants ordered counter clockwise starting with North East
 # Follows the quadrants of a circle, if you're familiar
 # Angle is always taken with respect to the horizontal
@@ -116,6 +66,56 @@ r_sloped = h/math.tan(math.radians(gate_angle))
 # round_radius = 0.5
 # flared = True
 # flare_ang = 40
+
+# threePointArc does not accept polar coordinates, so need to convert
+def polarToCartesian(r,theta):
+    print(theta)
+    x = math.cos(math.radians(theta))*r
+    y = math.sin(math.radians(theta))*r
+    return(x,y)
+# Moves the angle to the correct quadrant
+def changeAngleQuadrant(angle,quadrant):
+    if quadrant == 2:
+        return 180-angle
+    elif quadrant == 3:
+        return 180 + angle
+    elif quadrant == 4:
+        return -angle
+    else:
+        return angle
+# Cylidrical to Cartersian coordinates
+# Used to generate the notch path for sloped notches
+def cylindricalToCartesian(r,theta,h):
+    x=r*math.cos(math.radians(theta))
+    y=r*math.sin(math.radians(theta))
+    z = h
+    return (x,y,z)
+# Creates notch from diagonal to desired angle
+# Called twice per quadrant
+def make_single_notch(notch_ang,diag_ang,notch_depth,diag_depth,flare_ang):        
+    notch =(cq.Workplane("front")
+             .polarLineTo(diag_depth, diag_ang-offset))
+    if convex:
+        notch = notch.threePointArc(polarToCartesian(notch_depth*(1-convexity),(notch_ang*convexity_weight)+(1-convexity_weight)*diag_ang-offset),polarToCartesian(notch_depth, notch_ang-offset))
+    else:
+        notch = notch.polarLineTo(notch_depth, notch_ang-offset)
+    if flared:
+        notch=notch.polarLine(-flare_length,flare_ang-offset)
+    notch=notch.close()
+
+    if sloped:
+        notch=(notch.workplane(offset=h)
+               .polarLineTo(diag_depth+r_sloped, diag_ang-offset))
+        if convex:
+            notch = notch.threePointArc(polarToCartesian((notch_depth+r_sloped)*(1-convexity),(notch_ang*convexity_weight)+(1-convexity_weight)*diag_ang-offset),polarToCartesian(notch_depth+r_sloped, notch_ang-offset))
+        else:
+            notch = notch.polarLineTo(notch_depth+r_sloped, notch_ang-offset)
+        if flared:
+            notch=notch.polarLine(-(flare_length+r_sloped),flare_ang-offset)
+        notch=notch.close().loft(combine=True)
+    else:
+        notch=notch.extrude(h)
+    return notch                              
 
 def notch(a1,a2,quadrant):
     theta1 = changeAngleQuadrant(a1,quadrant)
@@ -175,6 +175,7 @@ def notch(a1,a2,quadrant):
 #     ortho=True
 # )
 
+
 # Work done here
 for i, ang in enumerate(angs):
     try:
@@ -192,6 +193,7 @@ show_object(
 )
 
 export_string=fname
+export_string+=f"_oem_" if oem_gate else ""
 export_string+=f"_notch_depth_{notch_depth_double}"
 export_string+=f"_adjustment_{adjust_sloped_depth}_gate_angle_{gate_angle}" if sloped else ""
 export_string+= f"_convex_{convexity}_{convexity_weight}" if convex else "_straight"
