@@ -24,8 +24,8 @@ angs = [(15,75),(15,75),(15,75),(15,75)]
 # Adjust the notch depth, can tune for single and double notches
 notch_depth_double = 10.7
 diagonal_depth_double = 11.5
-notch_depth_single = 11
-diagonal_depth_single = 11
+notch_depth_single = 10.7
+diagonal_depth_single = 11.15
 # Change these parameters for different notch styles
 convex = True
 convexity = 0.03
@@ -70,8 +70,7 @@ def notch_sketch(a1,a2,a_diag,af1,af2,d1,d2,d_diag):
     notch_point1 = polarToCartesian(d1,a1)
     notch_point2 = polarToCartesian(d2,a2)
     diag_point = polarToCartesian(d_diag,a_diag)
-
-    if a1+offset%90 == 0:
+    if (a1+offset)%90 == 0:
       Line((0,0),diag_point)
     else:
       if flared:
@@ -86,8 +85,9 @@ def notch_sketch(a1,a2,a_diag,af1,af2,d1,d2,d_diag):
         ThreePointArc(notch_point1,curve_midpoint1,diag_point)
       else:
         Line(notch_point1,diag_point)
-    if a2+offset%90 == 0:
-      Line(diag_point,(0,0))
+
+    if (a2+offset)%90 == 0:
+      Line((0,0),diag_point)
     else:
       if convex:
         midpoint_r2 = d2*(1-convexity)
@@ -115,7 +115,7 @@ def make_notch(a1,a2,quadrant):
   # Extra step adjusts depth based on notch angle, so the depth into the gate should not be affected by angle
   depth_factor1 = math.cos(math.radians(5.5))/abs(math.cos(math.radians(theta1-thetaM+thetaQ)))
   depth_factor2 = math.cos(math.radians(5.5))/abs(math.cos(math.radians(theta2-thetaM-thetaQ)))
-  if theta1%90 == 0 or theta2%90 ==0:
+  if a1%90 == 0 or a2%90 ==0:
       notch_depth1 = notch_depth_single*depth_factor1
       notch_depth2 = notch_depth_single*depth_factor2
       diag_depth = diagonal_depth_single
@@ -129,9 +129,9 @@ def make_notch(a1,a2,quadrant):
       diag_depth += oem_bottom_depth
   if sloped:
     r_adjust = adjust_sloped_depth*math.cos(math.radians(gate_angle))
-    notch_depth1 = notch_depth1-r_adjust
-    notch_depth2 = notch_depth2-r_adjust
-    diag_depth = diag_depth-r_adjust
+    notch_depth1 -= r_adjust
+    notch_depth2 -= r_adjust
+    diag_depth -= r_adjust
   
   with BuildPart() as notch:
     with BuildSketch() as bottom:
@@ -149,7 +149,8 @@ def make_notch(a1,a2,quadrant):
     if rounded:
       fillet(notch.edges(),radius=round_radius)
   notch.part.move(h_offset)
-  #show_object(notch.part)
+  # Uncomment if you want to see the cutting body
+  # show_object(notch.part)
   return notch
 
 export_string=fname
@@ -165,8 +166,12 @@ for ang in angs:
 export_string += "_b3d"
 
 for i, ang in enumerate(angs):
-   tool = make_notch(ang[0],ang[1],i+1)
-   gate = gate.cut(tool.part)
+  try:
+    tool = make_notch(ang[0],ang[1],i+1)
+    gate = gate.cut(tool.part)
+  except:
+    pass
+   
   #  show_object(tool)
 show_object(gate)
 gate.export_step(f'gates/exports/{export_string}.step')

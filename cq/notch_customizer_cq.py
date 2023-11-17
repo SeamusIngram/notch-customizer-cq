@@ -1,11 +1,11 @@
 import cadquery as cq
 from cadquery import exporters
 import math
-from ocp_vscode import show, show_object, reset_show, set_port, set_defaults, get_defaults
+from ocp_vscode import show, show_object, reset_show, set_port, set_defaults, get_defaults, Collapse, Camera
 set_port(3939)
 
 reset_show() # use for reapeated shift-enter execution to clean object buffer
-set_defaults(axes=True, black_edges=True, transparent=False, collapse=1, grid=(True, True, True))
+set_defaults(axes=True, black_edges=True, transparent=False, collapse=Collapse.LEAVES, grid=(True, True, True))
 
 #fname = "gate_0-6mm"
 fname = "gateplate-stock"
@@ -25,8 +25,8 @@ angs = [(15,75),(15,75),(15,75),(15,75)]
 # Adjust the notch depth, can tune for single and double notches
 notch_depth_double = 11.2
 diagonal_depth_double = 11.8
-notch_depth_single = 11
-diagonal_depth_single = 11
+notch_depth_single = 11.2
+diagonal_depth_single = 11.6
 # Change these parameters for different notch styles
 convex = True
 convexity = 0.035
@@ -187,8 +187,8 @@ for i, ang in enumerate(angs):
 show_object(
     result,
     # three-cad-viewer args
-    collapse="1",
-    reset_camera=True,
+    collapse=Collapse.LEAVES,
+    reset_camera=Camera.RESET,
     ortho=True
 )
 
