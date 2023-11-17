@@ -1,19 +1,21 @@
 # notch-customizer-py
-Cadquery/Build123D version of parametric notching script for Gamecube Controllers. Should support any GCC shell design ideas!
+Cadquery/Build123d version of parametric notching script for Gamecube Controllers. Should support any GCC shell design ideas!
 Based on my notch-customizer made with OpenSCAD, and has many of the same capabilities. I'm more comfortable with python, so I'll probably be updating this version only going forward.
 
 ## y tho?
 Custom GCC motherboards like the Phob and Goomwave support notch calibration, and so it is easier to produce notched Gamecube Controllers. Notches for these controllers do not have to be made specifically for one controller, and do not need to be as precise. Therefore, you can notch a shell ahead of time, and then calibrate when the controller is assemled. Lots of cool custom controller projects are using 3D printing to experiment with new shell shapes, built-in notches, or easily swappable gates. I came up with this script to try and make it so that anybody could easily customize and hopefully get a shell or gate 3d printed with the notches they wanted. Do I think that computer generated, 3D fabricated notches will replace talented modders and OEM shells? No, the feel of well made notches will certainly be better, but I do think if 3D printed gates can be shown to be consistent and relatively durable, it will allow many more people to have access to low cost options.
 
 # Dependencies
-[CadQuery](https://github.com/CadQuery/cadquery) is a python module that allows you to design parametric 3D models programmatically. For me, it offers a few advantages over OpenSCAD:
+[CadQuery](https://github.com/CadQuery/cadquery) and [Build123d](https://github.com/gumyr/build123d) are python modules that allow you to design parametric 3D models programmatically. There are several advantages over OpenSCAD for my workflow.
 - Import and export of .step files. This is probably the biggest draw, as being able to work with a step file makes manual adjustments after running the script much easier
 - Faster rendering of geometry
 - Automatic export and file naming with built-in functions
 - More powerful native geometry options. For example: curves, fillets, and lofts. All of which are used in this script
 - Access to standard python operations and syntax. This is a personal reason, but I find OpenSCAD finnicky in some areas, and am quite comfortable with python
 
-The CadQuery repo has instructions for installation, and I would recommend this [video](https://www.youtube.com/watch?v=3Tg_RJhqZRg) for installation. I also recommend installing [CadQuery-editor](https://github.com/CadQuery/CQ-editor#installation) (Installation instructions are in the repo) which provides a GUI to visualise your designs. 
+From the Build123d github, it describes itself as an evolution of Cadquery, with a less restrictive API that enables the full python toolbox. As such, Build123d statements will be more familiar to those used to python syntax, and I find it more intuitive to create geometry with. Since the functions will be slightly different, the notches created by the two scripts will be slightly different for the same paramenters. Currently, both versions of the notch customizer have feature parity, but going forward changes will likely be made to the Build123d script first. Certain features may not ever be ported to the CadQuery version. Any feature discrepancies will be noted.
+
+The [OCP CAD Viewer for VS Code](https://github.com/bernhard-42/vscode-ocp-cad-viewer) is an extension that allows you to develop and view your geometry directly in VS Code. It is easy to install, and will set up all the additional components for both CadQuery or Build123d. Just follow the instructions in its readme. This is my current preferred way to work with this project. If you wish to use a different environment (There are suggestions in the Build123d [documentation](https://build123d.readthedocs.io/en/latest/external.html)) you might have to adjust the script, as the functions that display the models use the ocp-vscode library.
 
 # Parameters
 ## Angles
@@ -52,19 +54,30 @@ If you wish to have a sloped edge, set **sloped** to True. The default **gate_an
 
 If you find that the notches are not the right depth when you enable sloped notches, you should change the value of **adjust_sloped_depth**, not the notch or diagonal depth. This way, you can adjust the sloped notches independently of the vertical ones. A higher value will make your notches more shallow. 
 
+
+## OEM Gates
+These files were designed with the OEM Shell files designed and shared by [GearHawkStudio](https://twitter.com/GearhawkStudio). The Gamecube gate is not perfectly symmetric, and so small adjustments can be made to each quadrant to make the notches more consistent. When using a gate with the OEM style, set the **oem_gate** variable to True. This will make the bottom notches extend slightly further, which results in a more consistent notch depth around the shell. I have noticed this is only really beneficial when a sloped notch is selected. You can tune the additional depth using the **oem_bottom_depth** parameter, though this shouldn't be necessary if your geometry is based on the same shell. 
+
+Also note that this expects the gate to be aligned around the origin in a specific way. If you are having trouble getting your OEM gate aligned, and the notches don't appear to be consistent, please let me know so I can share how to set up your gate in 3D space for the best result.
+
 # Adding your own Designs
-I have included an unmodified GCC shell step to be customised. Credit to [GearHawkStudio](https://twitter.com/GearhawkStudio) who created and shared the model. If you have your own gates that you wish to notch, the script should work, so long as your gate is centred at (0,0). Keep in mind that the spacing and depth of the notches are for a GCC gate, so if your design is significantly different it may require many parameter adjustments. You may need to adjust the positioning of the cutting bodies as well. The GCC gate is tilted by design approximately 3 degrees, so if your gate has a different offset rotation, then this has to be changed or the notches will not be in the correct locations. Change the variable **offset** in the script to the appropriate angle. Additionally, the geometry cutting the notches are positioned at a specific height. This is important when making sloped notches in particular. If the vertical positioning of your model is different to what's expected, no notches will be made. Change the **h_offset** value until the notches appear.
+I have included several gates based on the Gearhawk Shell, including removable options from the [Removable-Gate-GCC](https://github.com/sean44104/Removable-Gate-GCC) project by Olympia. If you have your own gates that you wish to notch, the script should work, so long as your gate is centred at (0,0). Keep in mind that the spacing and depth of the notches are for a GCC gate based on the Gearhawk files, so if your design is significantly different it may require many parameter adjustments. You may need to adjust the positioning of the cutting bodies as well. The GCC gate is tilted by design approximately 3 degrees, so if your gate has a different offset rotation, then this has to be changed or the notches will not be in the correct locations. Change the variable **offset** in the script to the appropriate angle. Additionally, the geometry cutting the notches are positioned at a specific height. This is important when making sloped notches in particular. If the vertical positioning of your model is different to what's expected, no notches will be made. Change the **h_offset** value until the notches appear.
 
 CadQuery only can import step files (no stl). Place your file in the gates folder, and set the string **fname** to "your_file_name" (do not include the file extension).
+
+# Running the Script
+Download the repository, and open the folder in VS Code. Follow the [ocp-vscode](https://github.com/bernhard-42/vscode-ocp-cad-viewer) quickstart instructions to install all dependencies. Open the notch-customizer.py file you wish to use. You can select either the build123d or CadQuery version. Then click the run button in VS Code. You should see the notched gate appear in the viewer, and an export will be made. Alternatively can run the script from the command line so long as you have installed the appropriate modules. You will not have a GUI, but it should still export the file, which you can view in some other 3D modelling software. Make sure the shell you wish to import and your export folder exist in the appropriate locations in your file structure.
 
 # Exporting 
 You may export as either a step or stl file. By default, only step files are created, but you may uncomment the last line of the script, and it well also export an stl.
 
-The files are exported to the gates/exports directory (if the folder doesn't exist, it will be made). The file will be named automatically with the relevant parameter values
+The files are exported to the gates/exports directory. You will need to create this file before you run the script the first time. The file will be named automatically with the relevant parameter values
 
 the format is:
 \
 original file name,
+\
+_oem, if **oem_gate** was True
 \
 _notch_depth_x, where x is **notch_depth_double**
 \
@@ -79,6 +92,8 @@ _filleted_x, where x is **round_radius** if **rounded** was True
 _flare_angle_x, where x is **flare_ang** if **flared** was True
 \
 _angles, followed by all the angles separated by underscores in the same order as the **angs** list
+\
+_cq or _b3d, depending on which modelling tool was used
 
 The resulting name is quite long, but I wanted it to record all major parameters. That way someone could be given the settings used and replicate it exactly if they wished.
 
